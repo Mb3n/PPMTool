@@ -3,9 +3,11 @@ package com.marcbengsch.ppmtool.services;
 
 import com.marcbengsch.ppmtool.domain.Backlog;
 import com.marcbengsch.ppmtool.domain.Project;
+import com.marcbengsch.ppmtool.domain.User;
 import com.marcbengsch.ppmtool.exceptions.ProjectIdException;
 import com.marcbengsch.ppmtool.repositories.BacklogRepository;
 import com.marcbengsch.ppmtool.repositories.ProjectRepository;
+import com.marcbengsch.ppmtool.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,13 +15,20 @@ import org.springframework.stereotype.Service;
 public class ProjectService {
 
 	@Autowired
-	ProjectRepository projectRepository;
+	private ProjectRepository projectRepository;
 
 	@Autowired
-	BacklogRepository backlogRepository;
+	private BacklogRepository backlogRepository;
 
-	public Project saveOrUpdateProject(Project project){
+	@Autowired
+	private UserRepository userRepository;
+
+	public Project saveOrUpdateProject(Project project, String username){
 		try{
+
+			User user = userRepository.findByUsername(username);
+			project.setUser(user);
+			project.setProjectLeader(user.getUsername());
 			project.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
 
 			if(project.getId() == null){
