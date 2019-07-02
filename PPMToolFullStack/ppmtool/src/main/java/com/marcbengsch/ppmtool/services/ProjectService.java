@@ -5,6 +5,7 @@ import com.marcbengsch.ppmtool.domain.Backlog;
 import com.marcbengsch.ppmtool.domain.Project;
 import com.marcbengsch.ppmtool.domain.User;
 import com.marcbengsch.ppmtool.exceptions.ProjectIdException;
+import com.marcbengsch.ppmtool.exceptions.ProjectNotFoundException;
 import com.marcbengsch.ppmtool.repositories.BacklogRepository;
 import com.marcbengsch.ppmtool.repositories.ProjectRepository;
 import com.marcbengsch.ppmtool.repositories.UserRepository;
@@ -48,7 +49,7 @@ public class ProjectService {
 		}
 	}
 
-	public Project findProjectByIdentifier(String projectId){
+	public Project findProjectByIdentifier(String projectId, String username){
 
 		Project project = projectRepository.findByProjectIdentifier(projectId.toUpperCase());
 
@@ -56,21 +57,20 @@ public class ProjectService {
 			throw new ProjectIdException("Project with ID " + projectId + " doesn't exist");
 		}
 
+		if(!project.getProjectLeader().equals(username)){
+			throw new ProjectNotFoundException("Project not found in your account");
+		}
+
+
 		return project;
 	}
 
-	public Iterable<Project> findAllByProjects(){
-		return projectRepository.findAll();
+	public Iterable<Project> findAllByProjects(String username){
+		return projectRepository.findAllByProjectLeader(username);
 	}
 
 
-	public void deleteProjectByIdentifier(String projectId){
-		Project project = projectRepository.findByProjectIdentifier(projectId.toUpperCase());
-
-		if(project == null){
-			throw new ProjectIdException("Cannot delete project with ID " + projectId + ". This project does not exist");
-		}
-
-		projectRepository.delete(project);
+	public void deleteProjectByIdentifier(String projectId, String username){
+		projectRepository.delete(findProjectByIdentifier(projectId, username));
 	}
 }
