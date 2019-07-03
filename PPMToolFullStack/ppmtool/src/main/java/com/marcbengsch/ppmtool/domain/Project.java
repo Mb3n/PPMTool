@@ -3,6 +3,7 @@ package com.marcbengsch.ppmtool.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -12,6 +13,8 @@ import java.util.Date;
 @Entity
 public class Project {
 
+
+	@ApiModelProperty(hidden = true)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -28,24 +31,31 @@ public class Project {
 	private String description;
 
 	@JsonFormat(pattern = "yyyy-mm-dd")
+	@ApiModelProperty(hidden = true)
 	private Date start_date;
 	@JsonFormat(pattern = "yyyy-mm-dd")
+	@ApiModelProperty(hidden = true)
 	private Date end_date;
 
+	@ApiModelProperty(hidden = true)
 	@JsonFormat(pattern = "yyyy-mm-dd")
 	@Column(updatable = false)
 	private Date created_At;
+	@ApiModelProperty(hidden = true)
 	@JsonFormat(pattern = "yyyy-mm-dd")
 	private Date updated_At;
 
+	@ApiModelProperty(hidden = true)
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "project")
 	@JsonIgnore
 	private Backlog backlog;
 
+	@ApiModelProperty(hidden = true)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnore
 	private User user;
 
+	@ApiModelProperty(hidden = true)
 	private String projectLeader;
 
 	public

@@ -3,6 +3,8 @@ package com.marcbengsch.ppmtool.web;
 import com.marcbengsch.ppmtool.domain.Project;
 import com.marcbengsch.ppmtool.services.MapValidationErrorService;
 import com.marcbengsch.ppmtool.services.ProjectService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +45,9 @@ public class ProjectController {
 	}
 
 
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "Authorization", value = "Bearer JWT Token", paramType = "header")
+	})
 	@GetMapping("/all")
 	public Iterable<Project> getAllProjects(Principal principal){return projectService.findAllByProjects(principal.getName());}
 
